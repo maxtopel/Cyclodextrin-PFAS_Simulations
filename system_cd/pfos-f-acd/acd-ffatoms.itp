@@ -1,0 +1,15 @@
+; acd_md.top created by rdparm2gmx.pl Mon Mar  5 21:31:08 CET 2012
+
+[ defaults ]
+; nbfunc        comb-rule       gen-pairs       fudgeLJ fudgeQQ
+1               2               yes             0.5     0.8333
+
+[ atomtypes ]
+;name  bond_type    mass    charge   ptype          sigma      epsilon
+HO            HO      0.0000  0.0000  A   0.00000e+00  0.00000e+00
+H1            H1      0.0000  0.0000  A   2.47135e-01  6.56888e-02
+OS            OS      0.0000  0.0000  A   3.00001e-01  7.11280e-01
+CG            CG      0.0000  0.0000  A   3.39967e-01  4.57730e-01
+H2            H2      0.0000  0.0000  A   2.29317e-01  6.56888e-02
+OH            OH      0.0000  0.0000  A   3.06647e-01  8.80314e-01
+
