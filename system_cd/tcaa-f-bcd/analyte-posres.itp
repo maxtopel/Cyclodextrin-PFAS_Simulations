@@ -1,0 +1,12 @@
+; position restraints for TCA of TCA_GMX.gro created by acpype (v: 2021-02-05T22:15:50CET) on Thu Oct 19 03:43:01 2023
+
+[ position_restraints ]
+;  i funct       fcx        fcy        fcz
+   1    1        500        500        500
+   2    1        500        500        500
+   3    1        500        500        500
+   4    1        500        500        500
+   5    1        500        500        500
+   6    1        500        500        500
+   7    1        500        500        500
+   8    1        500        500        500
