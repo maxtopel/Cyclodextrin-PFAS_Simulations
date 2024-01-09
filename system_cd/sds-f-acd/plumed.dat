@@ -1,0 +1,30 @@
+RESTART
+ACD: GROUP ATOMS=43-168
+SDS: GROUP ATOMS=1-42
+
+lig: COM ATOMS=SDS
+
+WHOLEMOLECULES ENTITY0=ACD,SDS
+#FIT_TO_TEMPLATE STRIDE=1 REFERENCE=acd_start.pdb TYPE=OPTIMAL
+
+#SDS
+planeMiddle: COM ATOMS=43,61,64,82,85,103,106,124,127,145,148,166  
+planeTop: COM ATOMS=53,57,74,78,95,99,116,120,137,141,158,162
+planeBottom: COM ATOMS=45,46,66,67,87,88,108,109,129,130,150,151  
+
+#changed angles for sds head tail vs pfos
+angleSDSACD: ANGLE ATOMS=16,1,planeBottom,planeTop
+
+ACDaxis: DISTANCE ATOMS=planeBottom,lig COMPONENTS
+radius: MATHEVAL ARG=ACDaxis.x,ACDaxis.y FUNC=sqrt(x*x+y*y) PERIODIC=NO
+mag: MATHEVAL ARG=ACDaxis.x,ACDaxis.y,ACDaxis.z FUNC=sqrt(x*x+y*y+z*z) PERIODIC=NO
+
+ptop: PROJECTION_ON_AXIS AXIS_ATOMS=planeMiddle,planeTop ATOM=lig
+pbottom: PROJECTION_ON_AXIS AXIS_ATOMS=planeMiddle,planeBottom ATOM=lig
+
+UPPER_WALLS ARG=mag AT=2 KAPPA=5000000 EXP=2 OFFSET=0 LABEL=walls
+PRINT STRIDE=10 ARG=radius,ACDaxis.z,ptop.ext,ptop.proj,mag,walls.bias FILE=BIAS
+
+PBMETAD ARG=ACDaxis.z,radius,angleSDSACD SIGMA=0.1,0.1,0.1 HEIGHT=1.2 PACE=500 TEMP=300 BIASFACTOR=20 GRID_MIN=-2.3,0,0 GRID_MAX=2.3,2.3,pi GRID_BIN=5000,5000,5000 FILE=hills_r.out,hills_r,hills_angle.out LABEL=metad
+PRINT STRIDE=10 ARG=angleSDSACD,radius,ACDaxis.z,mag,ptop.ext,ptop.proj,metad.bias FILE=COLVAR
+
