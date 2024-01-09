@@ -1,0 +1,45 @@
+RESTART
+GCD: GROUP ATOMS=43-210
+SDS: GROUP ATOMS=1-42
+
+lig: COM ATOMS=SDS
+
+WHOLEMOLECULES ENTITY0=GCD,SDS
+FIT_TO_TEMPLATE STRIDE=1 REFERENCE=gcd_start.pdb TYPE=OPTIMAL
+
+#SDS
+planeMiddle: COM ATOMS=43,61,64,82,85,103,106,124,127,145,148,166,169,187,190,208
+planeTop: COM ATOMS=53,57,74,78,95,99,116,120,137,141,158,162,179,183,200,204
+planeBottom: COM ATOMS=45,46,66,67,87,88,108,109,129,130,150,151,171,172,192,193
+
+#changed angles for sds head tail vs pfos
+angleSDSGCD: ANGLE ATOMS=16,1,planeBottom,planeTop
+
+GCDaxis: DISTANCE ATOMS=planeBottom,lig COMPONENTS
+radius: MATHEVAL ARG=GCDaxis.x,GCDaxis.y FUNC=sqrt(x*x+y*y) PERIODIC=NO
+mag: MATHEVAL ARG=GCDaxis.x,GCDaxis.y,GCDaxis.z FUNC=sqrt(x*x+y*y+z*z) PERIODIC=NO
+
+ptop: PROJECTION_ON_AXIS AXIS_ATOMS=planeMiddle,planeTop ATOM=lig
+pbottom: PROJECTION_ON_AXIS AXIS_ATOMS=planeMiddle,planeBottom ATOM=lig
+
+UPPER_WALLS ARG=mag AT=2 KAPPA=5000000 EXP=2 OFFSET=0 LABEL=walls
+PRINT STRIDE=10 ARG=radius,GCDaxis.z,ptop.ext,ptop.proj,mag,walls.bias FILE=BIAS
+
+PBMETAD ARG=GCDaxis.z,radius,angleSDSGCD SIGMA=0.1,0.1,0.1 HEIGHT=1.2 PACE=500 TEMP=300 BIASFACTOR=20 GRID_MIN=-2.3,0,0 GRID_MAX=2.3,2.3,pi GRID_BIN=5000,5000,5000 FILE=hills_r.out,hills_r,hills_angle.out LABEL=metad
+PRINT STRIDE=10 ARG=angleSDSGCD,radius,GCDaxis.z,mag,ptop.ext,ptop.proj,metad.bias FILE=COLVAR
+
+
+
+#UPPER_WALLS ARG=GCDaxis.z AT=2.5 KAPPA=5000000 EXP=2 OFFSET=0 LABEL=uwall
+#LOWER_WALLS ARG=GCDaxis.z AT=-2.5 KAPPA=5000000 EXP=2 OFFSET=0 LABEL=lwall
+#UPPER_WALLS ARG=radius AT=2.0 KAPPA=5000000 EXP=2 OFFSET=0 LABEL=swall
+#PRINT STRIDE=10 ARG=radius,GCDaxis.z,ptop.ext,ptop.proj,uwall.bias,lwall.bias,swall.bias FILE=BIAS
+#funnelTop: MATHEVAL ARG=radius,GCDaxis.z VAR=r,z FUNC=step(6.25-r*r-z*z) PERIODIC=NO         #(1-step((r-0.5+(z-1.5))))*step(-z+1.5)*step(z-1.0)+(1-step(r-0.5))*step(z-1.5)*step(-z+2.5) PERIODIC=NO #step(z)
+#funnelBottom: MATHEVAL ARG=radius,GCDaxis.z VAR=r,z FUNC=step(6.25-r*r-z*z) PERIODIC=NO      #(1-step((r-0.5+(-1.5-z))))*step(z+1.5)*step(-z-1.0)+(1-step(r-0.5))*step(-z-1.5)*step(z+2.5) PERIODIC=NO
+#UPPER_WALLS ARG=funnelTop AT=0 KAPPA=5000000 EXP=2 OFFSET=0 LABEL=funnelTop_wall
+#UPPER_WALLS ARG=funnelBottom AT=0 KAPPA=5000000 EXP=2 OFFSET=0 LABEL=funnelBottom_wall
+#PRINT STRIDE=10 ARG=radius,GCDaxis.z,ptop.ext,ptop.proj,funnelTop,funnelBottom,funnelTop_wall.bias,funnelBottom_wall.bias FILE=BIAS
+# remove BIASFACTOR if you want to perform standard metadynamics
+#PBMETAD ARG=GCDaxis.z,radius,angleSDSGCD SIGMA=0.1,0.1,0.1 HEIGHT=1.2 PACE=500 TEMP=300 BIASFACTOR=20 GRID_MIN=-2.6,0,0 GRID_MAX=2.6,2.1,pi GRID_BIN=5000,5000,5000 FILE=hills_r.out,hills_r,hills_angle.out LABEL=metad
+#PRINT STRIDE=10 ARG=angleSDSGCD,radius,GCDaxis.z,ptop.ext,ptop.proj,metad.bias FILE=COLVAR
+
