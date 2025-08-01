@@ -57,6 +57,10 @@ Cyclodextrin-PFAS_Simulations/<br />
 
 
 
-**Published work avaliable at DOI: 10.26434/chemrxiv-2024-6q6q5** <br />
+## Citation
+
+If you use this work please cite: <br />
+
+<pre> @article{Wang_Jang_Topel_2024, <br />title={Reversible ppt-Level Detection of Perfluorooctane Sulfonic Acid in Tap Water using Field-Effect Transistor Sensors}, <br />author={Wang, Yuqin and Jang, Hyun-June and Topel, Max and Dasetty, Siva and Liu, Yining and Ateia, Mohamed and Tam, Aaron and Rozyyev, Vepa and Ouyang, Ellie and Zhuang, Wen and et al.},<br />journal={ChemRxiv}, <br />year={2024}, <br />doi={10.26434/chemrxiv-2024-6q6q5}, <br />note={Preprint; not peer-reviewed}, } </pre>
 
 
